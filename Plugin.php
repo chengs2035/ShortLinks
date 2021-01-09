@@ -162,7 +162,12 @@ class ShortLinks_Plugin implements Typecho_Plugin_Interface
                 }
 
                 // 文章内容和评论内容处理
-                @preg_match_all('/<a(.*?)href="(.*?)"(.*?)>/', $text, $matches);
+                if(is_array($text)){
+                    @preg_match_all('/<a(.*?)href="(.*?)"(.*?)>/', $text['text'], $matches);
+                }
+                else{
+                    @preg_match_all('/<a(.*?)href="(.*?)"(.*?)>/', $text, $matches);
+                }
                 if ($matches) {
                     foreach ($matches[2] as $link) {
                         $text = str_replace("href=\"$link\"", "href=\"" . self::convertLink($link) . "\"" . $target, $text);
