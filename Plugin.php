@@ -170,7 +170,16 @@ class ShortLinks_Plugin implements Typecho_Plugin_Interface
                 }
                 if ($matches) {
                     foreach ($matches[2] as $link) {
-                        $text = str_replace("href=\"$link\"", "href=\"" . self::convertLink($link) . "\"" . $target, $text);
+//                         print_r ($text);
+                         $meLink= self::convertLink($link);
+                        if(is_array($text)){
+                            $text = str_replace("href=\"$link\"", "href=\"" . $meLink. "\"" . $target, $text['text']);
+                             error_log("text数组进来一次!".$link, 0);
+                        }else{
+                            $text = str_replace("href=\"$link\"", "href=\"" . $meLink. "\"" . $target, $text);
+                             error_log("text非数组进来一次!".$link, 0);
+                        }
+                        
                     }
                 }
             }
