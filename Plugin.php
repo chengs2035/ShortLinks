@@ -160,7 +160,6 @@ class ShortLinks_Plugin implements Typecho_Plugin_Interface
                     // 部分文章不转换
                     return $text;
                 }
-
                 // 文章内容和评论内容处理
                 if(is_array($text)){
                     @preg_match_all('/<a(.*?)href="(?!#)(.*?)"(.*?)>/', $text['text'], $matches);
@@ -203,9 +202,9 @@ class ShortLinks_Plugin implements Typecho_Plugin_Interface
                 foreach ($fieldsList as $field) {
                     if (isset($text->fields[$field])) {
                         // 非强力模式转换 a 标签
-                        @preg_match_all('/<a(.*?)href="(?!#)(.*?)"(.*?)>/', $widget->fields[$field], $matches);
+                        @preg_match_all('/<a(.*?)href="(.*?)"(.*?)>/', $widget->fields[$field], $matches);
                         if ($matches) {
-                            
+
                             foreach ($matches[2] as $link) {
                                 $widget->fields[$field] = str_replace("href=\"$link\"", "href=\"" . self::convertLink($link) . "\"", $widget->fields[$field]);
                             }
@@ -307,6 +306,9 @@ class ShortLinks_Plugin implements Typecho_Plugin_Interface
         $url = '~(?:(https?)://([^\s<]+)|(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])~i';
         $target = (self::options()->target) ? ' target="_blank" ' : ''; // 新窗口打开
         return preg_replace_callback($url, function ($matches) use ($target) {
+            if (preg_match('/\.(jpg|jepg|png|ico|bmp|gif|tiff)/i', $matches[0])) {
+                return $matches[0];
+            }
             if (strpos($matches[0], '://') !== false && strpos($matches[0], rtrim(Helper::options()->siteUrl, '/')) !== false) {
                 return '<a href="' . self::convertLink($matches[0]) . '" title="' . $matches[0] . '"' . $target . '>' . $matches[0] . '</a>';
             }
