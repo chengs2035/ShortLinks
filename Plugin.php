@@ -163,10 +163,10 @@ class ShortLinks_Plugin implements Typecho_Plugin_Interface
 
                 // 文章内容和评论内容处理
                 if(is_array($text)){
-                    @preg_match_all('/<a(.*?)href="(.*?)"(.*?)>/', $text['text'], $matches);
+                    @preg_match_all('/<a(.*?)href="(?!#)(.*?)"(.*?)>/', $text['text'], $matches);
                 }
                 else{
-                    @preg_match_all('/<a(.*?)href="(.*?)"(.*?)>/', $text, $matches);
+                    @preg_match_all('/<a(.*?)href="(?!#)(.*?)"(.*?)>/', $text, $matches); 
                 }
                 if ($matches) {
                     foreach ($matches[2] as $link) {
@@ -174,10 +174,8 @@ class ShortLinks_Plugin implements Typecho_Plugin_Interface
                          $meLink= self::convertLink($link);
                         if(is_array($text)){
                             $text = str_replace("href=\"$link\"", "href=\"" . $meLink. "\"" . $target, $text['text']);
-                             error_log("text数组进来一次!".$link, 0);
                         }else{
                             $text = str_replace("href=\"$link\"", "href=\"" . $meLink. "\"" . $target, $text);
-                             error_log("text非数组进来一次!".$link, 0);
                         }
                         
                     }
@@ -205,7 +203,7 @@ class ShortLinks_Plugin implements Typecho_Plugin_Interface
                 foreach ($fieldsList as $field) {
                     if (isset($text->fields[$field])) {
                         // 非强力模式转换 a 标签
-                        @preg_match_all('/<a(.*?)href="(.*?)"(.*?)>/', $widget->fields[$field], $matches);
+                        @preg_match_all('/<a(.*?)href="(?!#)(.*?)"(.*?)>/', $widget->fields[$field], $matches);
                         if ($matches) {
                             
                             foreach ($matches[2] as $link) {
